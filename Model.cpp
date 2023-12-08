@@ -134,7 +134,7 @@ Model::Model(const char* file)
 	}
 }
 
-void Model::Draw(Shader& shader, Camera& camera)
+void Model::Draw(Camera& camera)
 {
 	for (int i = 0; i < meshes.size(); i++)
 	{

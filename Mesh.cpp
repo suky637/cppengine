@@ -1,6 +1,6 @@
 #include "Mesh.h"
 
-Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, std::vector<Texture>& textures) : shader{ Shader("default.vert", "default.frag") }
+Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, std::vector<Texture>& textures) : shader{ Shader("Res/default.vert", "Res/default.frag") }
 {
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -30,7 +30,7 @@ Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, std::vec
 	EBO.UnBind();
 }
 
-Mesh::Mesh(std::vector<SimpleVertex>& vertices, std::vector<GLuint>& indices, std::vector<Texture>& textures) : shader{ Shader("default_normal.vert", "default_normal.frag") }
+Mesh::Mesh(std::vector<SimpleVertex>& vertices, std::vector<GLuint>& indices, std::vector<Texture>& textures) : shader{ Shader("Res/default_normal.vert", "Res/default_normal.frag") }
 {
 	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);

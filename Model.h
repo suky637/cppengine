@@ -12,7 +12,7 @@ public:
 	// Loads in a model from a file and stores tha information in 'data', 'JSON', and 'file'
 	Model(const char* file);
 
-	void Draw(Shader& shader, Camera& camera);
+	void Draw(Camera& camera);
 
 	glm::mat4 model{1.f};
 	

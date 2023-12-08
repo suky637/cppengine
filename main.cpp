@@ -24,7 +24,7 @@ int main()
 	glViewport(0, 0, width, height);
 	
 	// Generates Shader object using shaders default.vert and default.frag
-	Shader shaderProgram("default.vert", "default.frag");
+	//Shader shaderProgram("default.vert", "default.frag");
 
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 	// Take care of all the light related things
@@ -48,7 +48,7 @@ int main()
 		double curTime = glfwGetTime();
 
 		
-		shaderProgram.Activate();
+		//shaderProgram.Activate();
 		camera.Inputs(window);
 		camera.updateMatrix(45.f, 0.1f, 100.f);
 		
@@ -56,7 +56,7 @@ int main()
 		// RENDER
 
 
-		model.Draw(shaderProgram, camera);
+		model.Draw(camera);
 		
 		glfwSwapBuffers(window);
 
@@ -71,7 +71,6 @@ int main()
 			lastH = height;
 		}
 	}
-	shaderProgram.Delete();
 
 	glfwDestroyWindow(window);
 	glfwTerminate();
