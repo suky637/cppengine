@@ -48,7 +48,6 @@ Mesh::Mesh(std::vector<SimpleVertex>& vertices, std::vector<GLuint>& indices, st
 	VAO.Bind();
 
 	VBO VBO(vertices);
-	EBO EBO(indices);
 
 	VAO.LinkAttrib(VBO, 0, 3, GL_FLOAT, sizeof(SimpleVertex), (void*)0);
 	VAO.LinkAttrib(VBO, 1, 3, GL_FLOAT, sizeof(SimpleVertex), (void*)(3 * sizeof(float)));
@@ -56,11 +55,23 @@ Mesh::Mesh(std::vector<SimpleVertex>& vertices, std::vector<GLuint>& indices, st
 
 	VAO.UnBind();
 	VBO.UnBind();
-	EBO.UnBind();
 
 }
 
-void Mesh::Draw(Camera& camera, glm::mat4 matrix, glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
+void Mesh::SetShader(std::string path)
+{
+	shader = Shader((path + ".vert").c_str(), (path + ".frag").c_str());
+	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	glm::vec3 lightPos = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::mat4 lightModel = glm::mat4(1.0f);
+	lightModel = glm::translate(lightModel, lightPos);
+
+	shader.Activate();
+	glUniform4f(glGetUniformLocation(shader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	glUniform3f(glGetUniformLocation(shader.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+}
+
+void Mesh::Draw(Camera& camera, std::string shape, glm::mat4 matrix, glm::vec3 translation, glm::quat rotation, glm::vec3 scale)
 {
 
 
@@ -104,7 +115,7 @@ void Mesh::Draw(Camera& camera, glm::mat4 matrix, glm::vec3 translation, glm::qu
 	glm::mat4 rot = glm::mat4(1.f);
 	glm::mat4 sca = glm::mat4(1.f);
 
-	trans = glm::translate(trans, translation);
+	trans = glm::translate(translation);
 	rot = glm::mat4_cast(rotation);
 	sca = glm::scale(sca, scale);
 
@@ -115,5 +126,6 @@ void Mesh::Draw(Camera& camera, glm::mat4 matrix, glm::vec3 translation, glm::qu
 	glUniform3f(glGetUniformLocation(shader.ID, "camOrientation"), camera.Orientation.x, camera.Orientation.y, camera.Orientation.z);
 	glUniform3f(glGetUniformLocation(shader.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	if (shape == "Triangle")
+		glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }

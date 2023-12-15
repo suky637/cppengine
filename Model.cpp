@@ -17,8 +17,12 @@ Model::Model(const char* file)
 		std::vector<glm::vec3> vertices{};
 		for (int j = 0; j < JSON[i]["Vertices"].size(); j++)
 		{
-			glm::vec3 vertex{JSON[i]["Vertices"][j][0], JSON[i]["Vertices"][j][1], JSON[i]["Vertices"][j][2]};
-			vertices.push_back(vertex);
+			glm::mat4 scale = glm::mat4(1.f);
+			scale = glm::scale(scale, glm::vec3(-1.f, -1.f, -1.f));
+			glm::vec4 vertex{JSON[i]["Vertices"][j][0], JSON[i]["Vertices"][j][1], JSON[i]["Vertices"][j][2], 1.f};
+			vertex = scale * vertex;
+			glm::vec3 vert{vertex.x, vertex.y, vertex.z};
+			vertices.push_back(vert);
 		}
 		std::vector<GLuint> indices{};
 		for (int j = 0; j < JSON[i]["Indices"].size(); j++)
@@ -101,6 +105,8 @@ Model::Model(const char* file)
 		rotations.push_back(rotation);
 		scales.push_back(scale);
 		
+		shaderType = JSON[i]["ShaderType"];
+		renderType = JSON[i]["PrimitiveShape"];
 		if (!hasNormalMap)
 		{
 			std::vector<Vertex> vertex_{};
@@ -114,6 +120,10 @@ Model::Model(const char* file)
 
 
 			Mesh mesh{ vertex_, indices, textures };
+			if (shaderType != "default")
+			{
+				mesh.SetShader(shaderType);
+			}
 			meshes.push_back(mesh);
 		}
 		else
@@ -129,15 +139,25 @@ Model::Model(const char* file)
 
 
 			Mesh mesh{ vertex_, indices, textures };
+			if (shaderType != "default")
+			{
+				mesh.SetShader(shaderType);
+			}
 			meshes.push_back(mesh);
 		}
+
 	}
+}
+
+Model::Model()
+{
+	*this = Model("Res/cube.json");
 }
 
 void Model::Draw(Camera& camera)
 {
 	for (int i = 0; i < meshes.size(); i++)
 	{
-		meshes[i].Draw(camera, model, translations[i], rotations[i], scales[i]);
+		meshes[i].Draw(camera, renderType, model, translations[i], rotations[i], scales[i]);
 	}
 }

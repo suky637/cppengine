@@ -15,6 +15,8 @@ def parse_obj_file(file_path):
             if data[0] == 'v':
                 # Vertex data: v x y z
                 vertex = list(map(float, data[1:]))
+                # Apply scaling transformation by multiplying all coordinates by -1
+                # This will mirror the geometry across all axes
                 vertices.append(vertex)
             elif data[0] == 'vt':
                 # Texture coordinate data: vt u v
@@ -38,6 +40,9 @@ FILE_NAME = 'cube'
 obj_file_path = FILE_NAME + '.obj'
 
 vertices, texture_coords, indices = parse_obj_file(obj_file_path)
+
+# Apply a scaling matrix of -1 to all coordinates of all vertices
+vertices = [[-coord for coord in vertex] for vertex in vertices]
 
 JSONDATA = []
 OBJ = {}

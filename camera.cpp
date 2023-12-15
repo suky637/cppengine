@@ -5,6 +5,7 @@ Camera::Camera(int width, int height, glm::vec3 position)
 	Camera::width = width;
 	Camera::height = height;
 	Position = position;
+	velocity = position;
 }
 
 void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
@@ -31,30 +32,32 @@ void Camera::Dimentions(int width, int height)
 
 void Camera::Inputs(GLFWwindow* window)
 {
-	
+
+	glm::vec3 orientWithoutY = glm::vec3(Orientation.x, 0, Orientation.z);
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 	{
-		Position += speed * Orientation;
+		velocity += speed * orientWithoutY;
 	}
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 	{
-		Position += speed * -glm::normalize(glm::cross(Orientation, Up));
+		velocity += speed * -glm::normalize(glm::cross(Orientation, Up));
 	}
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 	{
-		Position -= speed * Orientation;
+		velocity -= speed * orientWithoutY;
 	}
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 	{
-		Position += speed * glm::normalize(glm::cross(Orientation, Up));
+		velocity += speed * glm::normalize(glm::cross(Orientation, Up));
 	}
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 	{
-		Position += speed * Up;
+		
+		//Position += speed * Up;
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
-		Position += speed * -Up;
+		//Position += speed * -Up;
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
@@ -65,7 +68,7 @@ void Camera::Inputs(GLFWwindow* window)
 		speed = 0.1f;
 	}
 
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
 	{
 		if (firstClick)
 		{
@@ -83,20 +86,28 @@ void Camera::Inputs(GLFWwindow* window)
 
 		glm::vec3 newOrientation = glm::rotate(Orientation, glm::radians(-rotx), glm::normalize(glm::cross(Orientation, Up)));
 
-		if (!((glm::angle(newOrientation, Up) <= glm::radians(5.f)) or (glm::angle(newOrientation, -Up) <= glm::radians(5.f))))
+		if (abs(glm::angle(newOrientation, Up) - glm::radians(90.0f)) <= glm::radians(85.0f))
 		{
 			Orientation = newOrientation;
+			rotation.x += glm::radians(rotx);
 		}
 
 		Orientation = glm::rotate(Orientation, glm::radians(-roty), Up);
+		rotation.y += glm::radians(roty);
 
 		glfwSetCursorPos(window, (width / 2), (height / 2));
 	}
-	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE)
+	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_RELEASE)
 	{
 		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		firstClick = true;
 	}
 	
+}
+
+void Camera::ApplyVelocity()
+{
+	Position += velocity;
+	velocity = glm::vec3(0.f, 0.f, 0.f);
 }
 

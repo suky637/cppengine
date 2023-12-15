@@ -21,5 +21,7 @@ public:
 	Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, std::vector<Texture>& textures);
 	Mesh(std::vector<SimpleVertex>& vertices, std::vector<GLuint>& indices, std::vector<Texture>& textures);
 
-	void Draw(Camera& camera, glm::mat4 matrix = glm::mat4(1.f), glm::vec3 translation = glm::vec3(0.f, 0.f, 0.f), glm::quat rotation = glm::quat(1.f, 0.f, 0.f, 0.f), glm::vec3 scale = glm::vec3(1.f, 1.f, 1.f));
+	void SetShader(std::string path);
+
+	void Draw(Camera& camera, std::string shape, glm::mat4 matrix = glm::mat4(1.f), glm::vec3 translation = glm::vec3(0.f, 0.f, 0.f), glm::quat rotation = glm::quat(1.f, 0.f, 0.f, 0.f), glm::vec3 scale = glm::vec3(1.f, 1.f, 1.f));
 };
